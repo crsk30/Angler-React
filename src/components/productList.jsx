@@ -7,22 +7,24 @@ import { TablePagination } from "@mui/material";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(0);
-  const [totalCount, settotalCount] = useState(1);
+  const [page, setPage] = useState(1); // Start page at 1
+  const [totalCount, setTotalCount] = useState(0);
   const rowsPerPage = 10;
 
   useEffect(() => {
     axios
-      .get(`http://192.168.112.22:3001/getProducts?page=${page}`)
+      .get(
+        `http://192.168.112.22:3001/getProducts?page=${page}&limit=${rowsPerPage}`
+      )
       .then((response) => {
         setProducts(response.data.products);
-        settotalCount(response.data.totalProducts);
+        setTotalCount(response.data.totalProducts);
       })
       .catch((error) => console.error("Error", error));
   }, [page]);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   return (
@@ -38,7 +40,7 @@ const ProductList = () => {
       <TablePagination
         component="div"
         count={totalCount}
-        page={page}
+        page={page - 1}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[rowsPerPage]}
